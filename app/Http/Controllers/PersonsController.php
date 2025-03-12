@@ -38,7 +38,7 @@ class PersonsController extends Controller
             'email' => 'required|email',
             'phone' => 'required|String',
             'address' => 'required|String',
-            'birthdate' => '',
+            'birthdate' => 'required|String',
             'age' => 'required|String'
         ]);
 
