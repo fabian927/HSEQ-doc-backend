@@ -123,38 +123,38 @@ class PersonsController extends Controller
     public function updatePerson(Request $request, $id)
     {
         $person = Persons::find($id);
-
+        
         if (!$person) {
-            $data = [
-                'message' => 'No se encontro persona',
-                'status' => '400'
-            ];
-
-            return response()->json($data, 400);
+            return response()->json([
+                'message' => 'No se encontró persona',
+                'status' => 404
+            ], 404);
         }
 
-        $validate = Validator::make($request->all(), [
-            'name' => 'max:255',
-            'last_name' => 'max:255',
-            'doc_type' => 'max:255',
-            'document' => 'unique:personas,document,' . $person->id,
-            'email' => 'email|unique:personas,email,' . $person->id,
-            'phone' => 'max:255',
-            'address' => 'max:255',
-            'birthdate' => 'max:255',
-            'age' => 'max:255'
+        error_log($request);
+        error_log($person);
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'sometimes|max:255',
+            'last_name' => 'sometimes|max:255',
+            'doc_type' => 'sometimes|max:255',
+            'document' => 'sometimes|unique:personas,document,' . $person->id,
+            'email' => 'sometimes|email|unique:personas,email,' . $person->id,
+            'phone' => 'sometimes|max:255',
+            'address' => 'sometimes|max:255',
+            'birthdate' => 'sometimes|date',
+            'age' => 'sometimes|integer|max:150'
         ]);
 
-        if ($validate->fails()) {
-            $data = [
-                'message' => 'Error en la validacion de datos',
-                'errors' => $validate->errors(),
-                'status' => 200
-            ];
-            return response()->json($data, 400);
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Error en la validación de datos',
+                'errors' => $validator->errors(),
+                'status' => 422 
+            ], 422);
         }
 
-        $person->fill($request->only([
+        $updateData = $request->only([
             'name',
             'last_name',
             'doc_type',
@@ -164,16 +164,35 @@ class PersonsController extends Controller
             'address',
             'birthdate',
             'age'
-        ]));
+        ]);
 
+        $changes = false;
+        foreach ($updateData as $key => $value) {
+            if ($person->$key != $value) {
+                $changes = true;
+                break;
+            }
+        }
+
+        if (!$changes) {
+            return response()->json([
+                'message' => 'No se detectaron cambios para actualizar',
+                'person' => $person,
+                'status' => 200
+            ], 200);
+        }
+
+        $person->fill($updateData);
         $person->save();
 
-        $data = [
-            'message' => 'Persona actualizada',
+        $person->refresh();
+
+        error_log($person);
+
+        return response()->json([
+            'message' => 'Persona actualizada correctamente',
             'person' => $person,
             'status' => 200
-        ];
-
-        return response()->json($data, 200);
+        ], 200);
     }
 }
