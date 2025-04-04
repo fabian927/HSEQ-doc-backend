@@ -13,7 +13,7 @@ Route::get('/persons', [PersonsController::class, 'getPersons']);
 Route::get('/persons/{document}', [PersonsController::class, 'getById']);
 Route::post('/persons', [PersonsController::class, 'createPerson']);
 Route::patch('/persons/{id}', [PersonsController::class, 'updatePerson']);
-Route::delete('/persons{id}', [PersonsController::class, 'deletPerson']);
+Route::delete('/persons/{id}', [PersonsController::class, 'deletPerson']);
 
 //Manejo de rutas API para el Controller Location
 

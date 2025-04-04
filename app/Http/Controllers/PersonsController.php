@@ -99,26 +99,32 @@ class PersonsController extends Controller
     }
 
     public function deletPerson($id)
-    {
-        $person = Persons::find($id);
+{
+    error_log("id desde delete: " . $id);
+    
+    $person = Persons::find($id);
 
-        if (!$person) {
-            $data = [
-                'message' => 'No se encontro persona',
-                'status' => 400
-            ];
-            return response()->json($data, 400);
-        }
+    error_log("person desde delete: " . json_encode($person));
 
+    try {
         $person->delete();
+        error_log("Persona eliminada ID: $id");
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Persona eliminada correctamente',
+            'data' => $person
+        ]);
 
-        $data = [
-            'message' => 'eliminada correctamente',
-            'person' => $person,
-            'status' => 200
-        ];
-        return response()->json($data, 200);
+    } catch (\Exception $e) {
+        error_log("Error al eliminar persona ID: $id - " . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al eliminar persona',
+            'error' => $e->getMessage()
+        ], 500);
     }
+}
 
     public function updatePerson(Request $request, $id)
     {
