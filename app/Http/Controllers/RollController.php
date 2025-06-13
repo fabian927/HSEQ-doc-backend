@@ -20,7 +20,7 @@ class RollController extends Controller
         }
 
         $data = [
-            'persons' => $roll,
+            'roll' => $roll,
             'status' => 200
         ];
         return response()->json($data, 200);
