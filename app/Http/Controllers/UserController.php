@@ -23,12 +23,12 @@ class UserController extends Controller
         }
 
         $user = User::where('email', $request->email)->first();
-
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'message' => 'Inicio de sesión exitoso',
             'user' => $user,
+            'person' => $user->persons,
             'token' => $token, 
         ]);
     }

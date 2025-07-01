@@ -19,7 +19,6 @@ class Persons extends Model
         'email',
         'phone',
         'address',
-        'address',
         'birthdate',
         'age'
     ];

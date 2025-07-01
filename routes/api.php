@@ -6,6 +6,9 @@ use App\Http\Controllers\PersonsController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\RollController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Ats\ATSController;
+use App\Http\Controllers\Ats\PartAtsController;
+use App\Http\Controllers\Ats\RespAtsController;
 
 //Manejo de rutas API para el Controller Personas
 
@@ -36,3 +39,9 @@ Route::get('/roll{id}', [RollController::class, 'getById']);
 Route::post('/roll', [RollController::class, 'createRoll']);
 Route::patch('/roll{id}', [RollController::class, 'updateRoll']);
 Route::delete('/roll{id}', [RollController::class, 'deleteRoll']);
+
+//Manejo de rutas API para el controller ATS
+Route::post('/ats', [ATSController::class, 'createAts']);
+Route::post('/participantes', [PartAtsController::class, 'participantesAtsCreate']);
+Route::post('/responsables', [RespAtsController::class, 'responsablesAtsCreate']);
+Route::get('/atsReports{user_id}', [ATSController::class, 'getAtsComplete']);

@@ -48,7 +48,7 @@ class PersonsController extends Controller
             $data = [
                 'message' => 'Error en la validacion de datos',
                 'errors' => $validate->errors(),
-                'status' => 200
+                'status' => 422
             ];
             return response()->json($data, 400);
         }
@@ -68,7 +68,7 @@ class PersonsController extends Controller
         if (!$persons) {
             $data = [
                 'message' => 'Error al crear persona',
-                'status' => 500
+                'status' => 400
             ];
             return response()->json($data, 400);
         }
