@@ -10,6 +10,36 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    public function updatePassword(Request $request)
+    {
+        $user = Auth::user();
+
+        $validator = Validator::make($request->all(), [
+            'pass' => 'required|string',
+            'newPass' => 'required|string|min:8',
+            'confirmPass' => 'required|string|same:newPass'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Error en la validación',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        if (!Hash::check($request->pass, $user->password)) {
+            return response()->json([
+                'message' => 'La contraseña actual es incorrecta'
+            ], 401);
+        }
+
+        $user->password = Hash::make($request->newPass);
+        $user->save();
+
+        return response()->json([
+            'message' => 'Contraseña actualizada correctamente'
+        ], 200);
+    }
 
     public function login(Request $request)
     {

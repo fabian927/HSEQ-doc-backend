@@ -31,6 +31,7 @@ Route::delete('/location{id}', [LocationController::class, 'deleteLocation']);
 Route::post('/login', [UserController::class, 'login']);
 Route::get('/user', [UserController::class, 'getUsers']);
 Route::post('/user', [UserController::class, 'createUser']);
+Route::middleware('auth:sanctum')->put('/user/update-password', [UserController::class, 'updatePassword']);
 
 //Manejo de rutas API para el Controller Roll
 
