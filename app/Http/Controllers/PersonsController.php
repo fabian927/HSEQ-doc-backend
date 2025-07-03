@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 use App\Models\Persons;
+use App\Models\User;
 
 class PersonsController extends Controller
 {
@@ -31,15 +33,17 @@ class PersonsController extends Controller
     {
         error_log("request" . json_decode($request));
         $validate = Validator::make($request->all(), [
-            'name' => 'required|String',
-            'last_name' => 'required|String',
-            'doc_type' => 'required|String',
+            'name' => 'required|string',
+            'last_name' => 'required|string',
+            'doc_type' => 'required|string',
             'document' => 'required|unique:personas',
-            'email' => 'required|email',
-            'phone' => 'required|String',
-            'address' => 'required|String',
-            'birthdate' => 'required|String',
-            'age' => 'required|String'
+            'email' => 'required|email|unique:users,email', // asegura que el email sea único en users
+            'phone' => 'required|string',
+            'address' => 'required|string',
+            'birthdate' => 'required|string',
+            'age' => 'required|string',
+            'pass' => 'required|string|min:8',
+            'roll_id' => 'required|integer',
         ]);
 
         if ($validate->fails()) {
@@ -72,11 +76,21 @@ class PersonsController extends Controller
             ];
             return response()->json($data, 400);
         }
-        $data = [
-            'message' => $persons,
+
+         // Crear usuario vinculado
+        $user = User::create([
+            'email' => $request->email,
+            'password' => Hash::make($request->pass),
+            'id_person' => $persons->id, // asumiendo que tu modelo Person tiene id autoincremental
+            'id_roll' => $request->roll_id
+        ]);
+
+        return response()->json([
+            'message' => 'Persona y usuario creados correctamente',
+            'persona' => $persons,
+            'usuario' => $user,
             'status' => 200
-        ];
-        return response()->json($data, 200);
+        ], 200);
     }
 
     public function getById($document)
@@ -99,32 +113,32 @@ class PersonsController extends Controller
     }
 
     public function deletPerson($id)
-{
-    error_log("id desde delete: " . $id);
-    
-    $person = Persons::find($id);
-
-    error_log("person desde delete: " . json_encode($person));
-
-    try {
-        $person->delete();
-        error_log("Persona eliminada ID: $id");
+    {
+        error_log("id desde delete: " . $id);
         
-        return response()->json([
-            'success' => true,
-            'message' => 'Persona eliminada correctamente',
-            'data' => $person
-        ]);
+        $person = Persons::find($id);
 
-    } catch (\Exception $e) {
-        error_log("Error al eliminar persona ID: $id - " . $e->getMessage());
-        return response()->json([
-            'success' => false,
-            'message' => 'Error al eliminar persona',
-            'error' => $e->getMessage()
-        ], 500);
+        error_log("person desde delete: " . json_encode($person));
+
+        try {
+            $person->delete();
+            error_log("Persona eliminada ID: $id");
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Persona eliminada correctamente',
+                'data' => $person
+            ]);
+
+        } catch (\Exception $e) {
+            error_log("Error al eliminar persona ID: $id - " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al eliminar persona',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
-}
 
     public function updatePerson(Request $request, $id)
     {
