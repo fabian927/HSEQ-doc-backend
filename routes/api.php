@@ -9,6 +9,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\Ats\ATSController;
 use App\Http\Controllers\Ats\PartAtsController;
 use App\Http\Controllers\Ats\RespAtsController;
+use App\Http\Controllers\inspectionHerrManuales\InspectionHerrController;
+use App\Http\Controllers\inspectionHerrManuales\PartInspectionController;
 
 //Manejo de rutas API para el Controller Personas
 
@@ -46,3 +48,8 @@ Route::post('/ats', [ATSController::class, 'createAts']);
 Route::post('/participantes', [PartAtsController::class, 'participantesAtsCreate']);
 Route::post('/responsables', [RespAtsController::class, 'responsablesAtsCreate']);
 Route::get('/atsReports{user_id}', [ATSController::class, 'getAtsComplete']);
+
+//Manejo de rutas API para el controller Inspeccion Herramientas Manuales
+Route::post('/inspectionHerrManuales', [InspectionHerrController::class, 'createInspection']);
+Route::post('/respInspectionHerrManuales', [PartInspectionController::class, 'createPartInspection']);
+Route::get('/inspectionHerrManuales{user_id}', [InspectionHerrController::class, 'getDocumentsComplete']);
