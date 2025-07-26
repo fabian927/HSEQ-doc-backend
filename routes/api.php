@@ -11,6 +11,9 @@ use App\Http\Controllers\Ats\PartAtsController;
 use App\Http\Controllers\Ats\RespAtsController;
 use App\Http\Controllers\inspectionHerrManuales\InspectionHerrController;
 use App\Http\Controllers\inspectionHerrManuales\PartInspectionController;
+use App\Http\Controllers\PermissionHeights\PermissionHeightsController;
+use App\Http\Controllers\PermissionHeights\PartPermissionController;
+use App\Http\Controllers\PermissionHeights\RespPermissionController;
 
 //Manejo de rutas API para el Controller Personas
 
@@ -53,3 +56,9 @@ Route::get('/atsReports{user_id}', [ATSController::class, 'getAtsComplete']);
 Route::post('/inspectionHerrManuales', [InspectionHerrController::class, 'createInspection']);
 Route::post('/respInspectionHerrManuales', [PartInspectionController::class, 'createPartInspection']);
 Route::get('/inspectionHerrManuales{user_id}', [InspectionHerrController::class, 'getDocumentsComplete']);
+
+//Manejo de rutas API para el controller Permiso Alturas
+Route::post('/permissionHeights', [PermissionHeightsController::class, 'createPermission']);
+Route::post('/partPermissionHeights', [PartPermissionController::class, 'partPermissionCreate']);
+Route::post('/respPermissionHeights', [RespPermissionController::class, 'respPermissionCreate']);
+Route::get('/permissionReport{user_id}', [PermissionHeightsController::class, 'getPermComplete']);
